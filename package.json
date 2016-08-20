@@ -1,0 +1,27 @@
+{
+  "name": "graphql-relay-subscription",
+  "version": "0.0.0",
+  "description": "Relay subscription helpers for GraphQL.js",
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taion/graphql-relay-subscription.git"
+  },
+  "keywords": [
+    "graphql",
+    "relay",
+    "subscriptions"
+  ],
+  "author": "Jimmy Jia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/taion/graphql-relay-subscription/issues"
+  },
+  "homepage": "https://github.com/taion/graphql-relay-subscription#readme"
+}
