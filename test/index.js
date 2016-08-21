@@ -7,7 +7,7 @@ import { graphql, GraphQLObjectType, GraphQLSchema, GraphQLString }
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { graphqlSubscribe, subscriptionWithClientId } from '../src';
+import { graphqlSubscribe, subscription } from '../src';
 
 chai.use(dirtyChai);
 chai.use(sinonChai);
@@ -26,8 +26,11 @@ describe('default resolution', () => {
       subscription: new GraphQLObjectType({
         name: 'Subscription',
         fields: {
-          foo: subscriptionWithClientId({
+          foo: subscription({
             name: 'FooSubscription',
+            inputFields: {
+              dummy: { type: GraphQLString },
+            },
             outputFields: {
               value: { type: GraphQLString },
             },
@@ -47,9 +50,8 @@ describe('default resolution', () => {
       schema,
       query: `
         subscription {
-          foo(input: { clientSubscriptionId: "0" }) {
+          foo(input: {}) {
             value
-            clientSubscriptionId
           }
         }
       `,
@@ -65,9 +67,8 @@ describe('default resolution', () => {
       schema,
       `
         subscription {
-          foo(input: { clientSubscriptionId: "1" }) {
+          foo(input: {}) {
             value
-            clientSubscriptionId
           }
         }
       `,
@@ -77,7 +78,6 @@ describe('default resolution', () => {
     expect(result.data).to.eql({
       foo: {
         value: 'bar',
-        clientSubscriptionId: '1',
       },
     });
   });
@@ -97,7 +97,7 @@ describe('custom resolution', () => {
       subscription: new GraphQLObjectType({
         name: 'Subscription',
         fields: {
-          foo: subscriptionWithClientId({
+          foo: subscription({
             name: 'FooSubscription',
             inputFields: () => ({
               arg: { type: GraphQLString },
@@ -122,14 +122,12 @@ describe('custom resolution', () => {
           foo(input: $input) {
             value
             arg
-            clientSubscriptionId
           }
         }
       `,
       variables: {
         input: {
           arg: 'bar',
-          clientSubscriptionId: '2',
         },
       },
     });
@@ -138,7 +136,6 @@ describe('custom resolution', () => {
       foo: {
         value: 'subscribed',
         arg: 'bar',
-        clientSubscriptionId: '2',
       },
     });
   });
@@ -151,7 +148,6 @@ describe('custom resolution', () => {
           foo(input: $input) {
             value
             arg
-            clientSubscriptionId
           }
         }
       `,
@@ -160,7 +156,6 @@ describe('custom resolution', () => {
       {
         input: {
           arg: 'qux',
-          clientSubscriptionId: '3',
         },
       },
     );
@@ -169,7 +164,6 @@ describe('custom resolution', () => {
       foo: {
         value: 'baz',
         arg: 'qux',
-        clientSubscriptionId: '3',
       },
     });
   });

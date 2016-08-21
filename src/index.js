@@ -1,2 +1,2 @@
 export graphqlSubscribe from './graphqlSubscribe';
-export subscriptionWithClientId from './subscriptionWithClientId';
+export subscription from './subscription';

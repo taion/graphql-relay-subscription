@@ -1,22 +1,13 @@
-import {
-  GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString,
-} from 'graphql';
+import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType }
+  from 'graphql';
 
 export const SUBSCRIBE = {};
-
-function resolveMaybeThunk(maybeThunk) {
-  return typeof maybeThunk === 'function' ? maybeThunk() : maybeThunk;
-}
-
-const clientSubscriptionIdField = {
-  type: new GraphQLNonNull(GraphQLString),
-};
 
 function defaultGetPayload(obj) {
   return obj;
 }
 
-export default function subscriptionWithClientId({
+export default function subscription({
   name,
   inputFields,
   outputFields,
@@ -25,18 +16,12 @@ export default function subscriptionWithClientId({
 }) {
   const inputType = new GraphQLInputObjectType({
     name: `${name}Input`,
-    fields: () => ({
-      ...resolveMaybeThunk(inputFields),
-      clientSubscriptionId: clientSubscriptionIdField,
-    }),
+    fields: inputFields,
   });
 
   const outputType = new GraphQLObjectType({
     name: `${name}Payload`,
-    fields: () => ({
-      ...resolveMaybeThunk(outputFields),
-      clientSubscriptionId: clientSubscriptionIdField,
-    }),
+    fields: outputFields,
   });
 
   return {
