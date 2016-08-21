@@ -1,6 +1,6 @@
 import { graphql } from 'graphql';
 
-import { SUBSCRIBE } from './subscriptionWithClientId';
+import { SUBSCRIBE } from './subscription';
 
 export default function graphqlSubscribe({
   schema,
