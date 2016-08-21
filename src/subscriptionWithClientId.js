@@ -8,10 +8,6 @@ function resolveMaybeThunk(maybeThunk) {
   return typeof maybeThunk === 'function' ? maybeThunk() : maybeThunk;
 }
 
-const clientSubscriptionIdField = {
-  type: new GraphQLNonNull(GraphQLString),
-};
-
 function defaultGetPayload(obj) {
   return obj;
 }
@@ -27,7 +23,7 @@ export default function subscriptionWithClientId({
     name: `${name}Input`,
     fields: () => ({
       ...resolveMaybeThunk(inputFields),
-      clientSubscriptionId: clientSubscriptionIdField,
+      clientSubscriptionId: { type: GraphQLString },
     }),
   });
 
@@ -35,7 +31,7 @@ export default function subscriptionWithClientId({
     name: `${name}Payload`,
     fields: () => ({
       ...resolveMaybeThunk(outputFields),
-      clientSubscriptionId: clientSubscriptionIdField,
+      clientSubscriptionId: { type: GraphQLString },
     }),
   });
 

@@ -47,9 +47,8 @@ describe('default resolution', () => {
       schema,
       query: `
         subscription {
-          foo(input: { clientSubscriptionId: "0" }) {
+          foo(input: {}) {
             value
-            clientSubscriptionId
           }
         }
       `,
@@ -65,9 +64,8 @@ describe('default resolution', () => {
       schema,
       `
         subscription {
-          foo(input: { clientSubscriptionId: "1" }) {
+          foo(input: {}) {
             value
-            clientSubscriptionId
           }
         }
       `,
@@ -77,7 +75,6 @@ describe('default resolution', () => {
     expect(result.data).to.eql({
       foo: {
         value: 'bar',
-        clientSubscriptionId: '1',
       },
     });
   });
