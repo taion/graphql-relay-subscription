@@ -15,6 +15,6 @@ export default function graphqlSubscribe({
     SUBSCRIBE,
     context,
     variables,
-    operationName
+    operationName,
   );
 }
