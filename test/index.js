@@ -69,7 +69,7 @@ describe('default resolution', () => {
           }
         }
       `,
-      { value: 'bar' }
+      { value: 'bar' },
     );
 
     expect(result.data).to.eql({
