@@ -1,15 +1,17 @@
 # graphql-relay-subscription [![Travis][build-badge]][build] [![npm][npm-badge]][npm]
 
-[Relay](http://facebook.github.io/relay/) subscription helpers for [GraphQL.js](https://github.com/graphql/graphql-js).
+[Relay](http://facebook.github.io/relay/) subscription helper for [GraphQL.js](https://github.com/graphql/graphql-js).
 
 [![Codecov][codecov-badge]][codecov]
 [![Discord][discord-badge]][discord]
 
 ## Usage
 
+As with `mutationWithClientId` in graphql-relay-js, `subscriptionWithClientId` creates subscriptions with single inputs and client subscription IDs.
+
 ```js
-import { graphqlSubscribe, subscriptionWithClientId }
-  from 'graphql-relay-subscription';
+import { parse, subscribe } from 'graphql';
+import { subscriptionWithClientId } from 'graphql-relay-subscription';
 
 /* ... */
 
@@ -21,38 +23,32 @@ const UpdateWidgetSubscription = subscriptionWithClientId({
   outputFields: {
     widget: Widget,
   },
-  subscribe: (input, context) => {
-    context.subscribe(`widgets:${input.widgetId}:updated`);
-  },
+  subscribe: ({ widgetId }) => (
+    createSubscription(`widgets:${widgetId}:updated`)
+  ),
 });
 
-/* ... */
-
-const query = `
-  subscription ($input_0: UpdateWidgetSubscriptionInput!) {
-    updateWidget(input: $input_0) {
-      widget {
-        name
+const subscription = await subscribe(
+  schema,
+  parse(`
+    subscription ($input_0: UpdateWidgetSubscriptionInput!) {
+      updateWidget(input: $input_0) {
+        widget {
+          name
+        }
+        clientSubscriptionId
       }
-      clientSubscriptionId
     }
-  }
-`;
-
-const variables = {
-  input_0: {
-    widgetId: 'foo',
-    clientSubscriptionId: '0',
+  `),
+  null,
+  null,
+  {
+    input_0: {
+      widgetId: 'foo',
+      clientSubscriptionId: '0',
+    },
   },
-};
-
-const context = {
-  subscribe: (channel) => {
-    subscriptions.add(channel, query, variables);
-  },
-};
-
-graphqlSubscribe({ schema, query, context, variables });
+);
 ```
 
 

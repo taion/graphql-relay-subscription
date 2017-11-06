@@ -9,10 +9,15 @@
   "scripts": {
     "build": "rimraf lib && babel src -d lib",
     "lint": "eslint src test *.js",
-    "mocha": "mocha --compilers js:babel-register test",
     "prepublish": "npm run build",
-    "test": "npm run lint && npm run testonly",
-    "testonly": "NODE_ENV=test nyc npm run mocha"
+    "tdd": "jest --watch",
+    "test": "npm run lint && npm run testonly -- --coverage",
+    "testonly": "jest --runInBand --verbose"
+  },
+  "jest": {
+    "setupFiles": [
+      "babel-polyfill"
+    ]
   },
   "repository": {
     "type": "git",
@@ -30,31 +35,23 @@
   },
   "homepage": "https://github.com/taion/graphql-relay-subscription#readme",
   "peerDependencies": {
-    "graphql": ">=0.5.0"
+    "graphql": ">=0.10.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
-    "babel-plugin-istanbul": "^4.1.4",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
-    "babel-preset-stage-1": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "chai": "^3.5.0",
-    "codecov": "^2.2.0",
-    "dirty-chai": "^1.2.2",
-    "eslint": "^3.19.0",
-    "eslint-config-4catalyzer": "^0.2.0",
-    "eslint-plugin-import": "^2.3.0",
-    "graphql": "^0.10.1",
-    "mocha": "^3.4.2",
-    "nyc": "^11.0.2",
-    "rimraf": "^2.6.1",
-    "sinon": "^2.3.2",
-    "sinon-chai": "^2.10.0"
-  },
-  "nyc": {
-    "sourceMap": false,
-    "instrument": false
+    "babel-jest": "^21.2.0",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "codecov": "^3.0.0",
+    "eslint": "^4.10.0",
+    "eslint-config-4catalyzer": "^0.3.3",
+    "eslint-plugin-import": "^2.8.0",
+    "graphql": "^0.11.7",
+    "jest": "^21.2.1",
+    "rimraf": "^2.6.2"
   }
 }

@@ -1,3 +1,11 @@
 {
-  "extends": "4catalyzer"
+  "extends": "4catalyzer",
+  "rules": {
+    // FIXME: Temporary workaround pending fixing this upstream.
+    "generator-star-spacing": ["error", {
+      "before": false,
+      "after": true,
+      "method": "both"
+    }]
+  }
 }
