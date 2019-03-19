@@ -1,6 +1,6 @@
 {
   "name": "graphql-relay-subscription",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Relay subscription helpers for GraphQL.js",
   "files": [
     "lib"
