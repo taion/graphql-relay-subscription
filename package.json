@@ -50,7 +50,7 @@
     "eslint": "^4.10.0",
     "eslint-config-4catalyzer": "^0.3.3",
     "eslint-plugin-import": "^2.8.0",
-    "graphql": "^0.11.7",
+    "graphql": "^14.1.1",
     "jest": "^21.2.1",
     "rimraf": "^2.6.2"
   }
