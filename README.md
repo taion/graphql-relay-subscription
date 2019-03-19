@@ -51,7 +51,6 @@ const subscription = await subscribe(
 );
 ```
 
-
 [build-badge]: https://img.shields.io/travis/taion/graphql-relay-subscription/master.svg
 [build]: https://travis-ci.org/taion/graphql-relay-subscription
 
