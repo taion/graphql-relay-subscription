@@ -1,5 +1,8 @@
 import {
-  GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType, GraphQLString,
+  GraphQLInputObjectType,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLString,
 } from 'graphql';
 
 function resolveMaybeThunk(maybeThunk) {
@@ -36,9 +39,8 @@ export function subscriptionWithClientId({
 
   let wrappedSubscribe;
   if (subscribe) {
-    wrappedSubscribe = (obj, { input }, context, info) => (
-      subscribe(input, context, info)
-    );
+    wrappedSubscribe = (obj, { input }, context, info) =>
+      subscribe(input, context, info);
   } else {
     wrappedSubscribe = undefined;
   }
@@ -49,13 +51,11 @@ export function subscriptionWithClientId({
       input: { type: new GraphQLNonNull(inputType) },
     },
     subscribe: wrappedSubscribe,
-    resolve: (obj, { input }, context, info) => (
-      Promise.resolve(getPayload(obj, input, context, info))
-        .then(payload => ({
-          ...payload,
-          clientSubscriptionId: input.clientSubscriptionId,
-        }))
-    ),
+    resolve: (obj, { input }, context, info) =>
+      Promise.resolve(getPayload(obj, input, context, info)).then(payload => ({
+        ...payload,
+        clientSubscriptionId: input.clientSubscriptionId,
+      })),
     ...config,
   };
 }

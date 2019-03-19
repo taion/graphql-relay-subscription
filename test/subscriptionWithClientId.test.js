@@ -1,5 +1,10 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLString, parse, subscribe }
-  from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  parse,
+  subscribe,
+} from 'graphql';
 
 import { subscriptionWithClientId } from '../src';
 
@@ -22,7 +27,8 @@ describe('default resolution', () => {
             outputFields: {
               value: { type: GraphQLString },
             },
-            async * subscribe() {
+            // eslint-disable-next-line require-await
+            async *subscribe() {
               yield { value: 'bar' };
             },
           }),
@@ -66,6 +72,7 @@ describe('default resolution', () => {
   });
 
   it('should default-subscribe', async () => {
+    // eslint-disable-next-line require-await
     async function* generator() {
       yield { value: 'foo' };
     }
@@ -124,10 +131,12 @@ describe('custom resolution', () => {
               value: { type: GraphQLString },
               arg: { type: GraphQLString },
             }),
-            async * subscribe({ arg }) {
+            // eslint-disable-next-line require-await
+            async *subscribe({ arg }) {
               yield { value: `subscribed:${arg}` };
               yield { value: 'bar' };
             },
+            // eslint-disable-next-line require-await
             getPayload: async ({ value }, { arg }) => ({ value, arg }),
           }),
         },
