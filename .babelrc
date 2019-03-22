@@ -3,10 +3,5 @@
     ["@babel/env", {
       "loose": true
     }]
-  ],
-  "plugins": [
-    ["@babel/proposal-object-rest-spread", {
-      "loose": true
-    }]
   ]
 }
