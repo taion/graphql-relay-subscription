@@ -52,10 +52,12 @@ export function subscriptionWithClientId({
     },
     subscribe: wrappedSubscribe,
     resolve: (obj, { input }, context, info) =>
-      Promise.resolve(getPayload(obj, input, context, info)).then(payload => ({
-        ...payload,
-        clientSubscriptionId: input.clientSubscriptionId,
-      })),
+      Promise.resolve(getPayload(obj, input, context, info)).then(
+        (payload) => ({
+          ...payload,
+          clientSubscriptionId: input.clientSubscriptionId,
+        }),
+      ),
     ...config,
   };
 }
