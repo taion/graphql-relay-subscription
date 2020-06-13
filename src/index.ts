@@ -1,26 +1,55 @@
 import {
+  GraphQLFieldConfig,
+  GraphQLInputFieldConfigMap,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
+  GraphQLResolveInfo,
   GraphQLString,
+  Thunk,
 } from 'graphql';
 
-function resolveMaybeThunk(maybeThunk) {
-  return typeof maybeThunk === 'function' ? maybeThunk() : maybeThunk;
+type SubscriptionFn = (
+  object: any,
+  context: any,
+  info: GraphQLResolveInfo,
+) => Promise<any> | any;
+
+type SubscriptionConfig = {
+  name: string;
+  description?: string;
+  deprecationReason?: string;
+  subscribe?: SubscriptionFn;
+  inputFields: Thunk<GraphQLInputFieldConfigMap>;
+  outputFields: Thunk<GraphQLInputFieldConfigMap>;
+  getPayload?: (
+    obj: any,
+    input: any,
+    context: any,
+    info: GraphQLResolveInfo,
+  ) => Promise<any> | any;
+};
+
+function resolveMaybeThunk<T>(maybeThunk: Thunk<T>): T {
+  return typeof maybeThunk === 'function'
+    ? // @ts-ignore
+      maybeThunk()
+    : maybeThunk;
 }
 
-function defaultGetPayload(obj) {
+function defaultGetPayload(obj: any) {
   return obj;
 }
 
 export function subscriptionWithClientId({
   name,
+  description,
+  deprecationReason,
+  subscribe,
   inputFields,
   outputFields,
-  subscribe,
   getPayload = defaultGetPayload,
-  ...config
-}) {
+}: SubscriptionConfig): GraphQLFieldConfig<any, any> {
   const inputType = new GraphQLInputObjectType({
     name: `${name}Input`,
     fields: () => ({
@@ -39,14 +68,20 @@ export function subscriptionWithClientId({
 
   let wrappedSubscribe;
   if (subscribe) {
-    wrappedSubscribe = (obj, { input }, context, info) =>
-      subscribe(input, context, info);
+    wrappedSubscribe = (
+      obj: any,
+      { input }: any,
+      context: any,
+      info: GraphQLResolveInfo,
+    ) => subscribe(input, context, info);
   } else {
     wrappedSubscribe = undefined;
   }
 
   return {
     type: outputType,
+    description,
+    deprecationReason,
     args: {
       input: { type: new GraphQLNonNull(inputType) },
     },
@@ -58,6 +93,5 @@ export function subscriptionWithClientId({
           clientSubscriptionId: input.clientSubscriptionId,
         }),
       ),
-    ...config,
   };
 }

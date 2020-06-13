@@ -6,7 +6,7 @@ import {
   subscribe,
 } from 'graphql';
 
-import { subscriptionWithClientId } from '../src';
+import { subscriptionWithClientId } from '../lib';
 
 describe('default resolution', () => {
   let schema;
@@ -24,16 +24,17 @@ describe('default resolution', () => {
         fields: {
           foo: subscriptionWithClientId({
             name: 'FooSubscription',
+            inputFields: {},
             outputFields: {
               value: { type: GraphQLString },
             },
-            // eslint-disable-next-line require-await
             async *subscribe() {
               yield { value: 'bar' };
             },
           }),
           bar: subscriptionWithClientId({
             name: 'BarSubscription',
+            inputFields: {},
             outputFields: {
               value: { type: GraphQLString },
             },
@@ -55,6 +56,7 @@ describe('default resolution', () => {
       `),
     );
 
+    // @ts-ignore
     expect(await subscription.next()).toEqual({
       value: {
         data: {
@@ -66,13 +68,13 @@ describe('default resolution', () => {
       done: false,
     });
 
+    // @ts-ignore
     expect(await subscription.next()).toEqual({
       done: true,
     });
   });
 
   it('should default-subscribe', async () => {
-    // eslint-disable-next-line require-await
     async function* generator() {
       yield { value: 'foo' };
     }
@@ -91,6 +93,7 @@ describe('default resolution', () => {
       },
     );
 
+    // @ts-ignore
     expect(await subscription.next()).toEqual({
       value: {
         data: {
@@ -102,6 +105,7 @@ describe('default resolution', () => {
       done: false,
     });
 
+    // @ts-ignore
     expect(await subscription.next()).toEqual({
       done: true,
     });
@@ -131,13 +135,11 @@ describe('custom resolution', () => {
               value: { type: GraphQLString },
               arg: { type: GraphQLString },
             }),
-            // eslint-disable-next-line require-await
             async *subscribe({ arg }) {
               yield { value: `subscribed:${arg}` };
               yield { value: 'bar' };
             },
-            // eslint-disable-next-line require-await
-            getPayload: async ({ value }, { arg }) => ({ value, arg }),
+            getPayload: ({ value }, { arg }) => ({ value, arg }),
           }),
         },
       }),
