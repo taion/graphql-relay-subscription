@@ -1,4 +1,5 @@
 import {
+  ExecutionResult,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
@@ -6,10 +7,10 @@ import {
   subscribe,
 } from 'graphql';
 
-import { subscriptionWithClientId } from '../lib';
+import { subscriptionWithClientId } from '../src';
 
 describe('default resolution', () => {
-  let schema;
+  let schema: GraphQLSchema;
 
   beforeEach(() => {
     schema = new GraphQLSchema({
@@ -24,7 +25,6 @@ describe('default resolution', () => {
         fields: {
           foo: subscriptionWithClientId({
             name: 'FooSubscription',
-            inputFields: {},
             outputFields: {
               value: { type: GraphQLString },
             },
@@ -34,7 +34,6 @@ describe('default resolution', () => {
           }),
           bar: subscriptionWithClientId({
             name: 'BarSubscription',
-            inputFields: {},
             outputFields: {
               value: { type: GraphQLString },
             },
@@ -56,8 +55,9 @@ describe('default resolution', () => {
       `),
     );
 
-    // @ts-ignore
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       value: {
         data: {
           foo: {
@@ -68,8 +68,9 @@ describe('default resolution', () => {
       done: false,
     });
 
-    // @ts-ignore
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       done: true,
     });
   });
@@ -93,8 +94,9 @@ describe('default resolution', () => {
       },
     );
 
-    // @ts-ignore
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       value: {
         data: {
           bar: {
@@ -105,15 +107,16 @@ describe('default resolution', () => {
       done: false,
     });
 
-    // @ts-ignore
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       done: true,
     });
   });
 });
 
 describe('custom resolution', () => {
-  let schema;
+  let schema: GraphQLSchema;
 
   beforeEach(() => {
     schema = new GraphQLSchema({
@@ -139,7 +142,8 @@ describe('custom resolution', () => {
               yield { value: `subscribed:${arg}` };
               yield { value: 'bar' };
             },
-            getPayload: ({ value }, { arg }) => ({ value, arg }),
+            // eslint-disable-next-line require-await
+            getPayload: async ({ value }, { arg }) => ({ value, arg }),
           }),
         },
       }),
@@ -168,7 +172,9 @@ describe('custom resolution', () => {
       },
     );
 
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       value: {
         data: {
           foo: {
@@ -181,7 +187,9 @@ describe('custom resolution', () => {
       done: false,
     });
 
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       value: {
         data: {
           foo: {
@@ -194,7 +202,9 @@ describe('custom resolution', () => {
       done: false,
     });
 
-    expect(await subscription.next()).toEqual({
+    expect(
+      await (subscription as AsyncIterableIterator<ExecutionResult>).next(),
+    ).toEqual({
       done: true,
     });
   });

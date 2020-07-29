@@ -1,59 +1,70 @@
 import {
-  GraphQLFieldConfig,
-  GraphQLInputFieldConfigMap,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLResolveInfo,
   GraphQLString,
+} from 'graphql';
+import type {
+  GraphQLFieldConfig,
+  GraphQLFieldConfigMap,
+  GraphQLInputFieldConfigMap,
+  GraphQLResolveInfo,
   Thunk,
 } from 'graphql';
 
-type SubscriptionFn = (
-  object: any,
-  context: any,
-  info: GraphQLResolveInfo,
-) => Promise<any> | any;
-
-type SubscriptionConfig = {
-  name: string;
-  description?: string;
-  deprecationReason?: string;
-  subscribe?: SubscriptionFn;
-  inputFields: Thunk<GraphQLInputFieldConfigMap>;
-  outputFields: Thunk<GraphQLInputFieldConfigMap>;
-  getPayload?: (
-    obj: any,
-    input: any,
-    context: any,
-    info: GraphQLResolveInfo,
-  ) => Promise<any> | any;
-};
-
-function resolveMaybeThunk<T>(maybeThunk: Thunk<T>): T {
-  return typeof maybeThunk === 'function'
-    ? // @ts-ignore
-      maybeThunk()
-    : maybeThunk;
+interface InputArgs<TInput> {
+  input: TInput & { clientSubscriptionId?: string | null | undefined };
 }
 
-function defaultGetPayload(obj: any) {
+interface SubscriptionConfig<TSource, TContext, TInput>
+  extends Omit<
+    GraphQLFieldConfig<TSource, TContext, InputArgs<TInput>>,
+    'type' | 'args' | 'subscribe' | 'resolve'
+  > {
+  name: string;
+  inputFields?: Thunk<GraphQLInputFieldConfigMap>;
+  outputFields?: Thunk<GraphQLFieldConfigMap<TSource, TContext>>;
+  subscribe?: (
+    input: TInput,
+    context: TContext,
+    info: GraphQLResolveInfo,
+  ) => any;
+  getPayload?: (
+    obj: TSource,
+    input: TInput,
+    context: TContext,
+    info: GraphQLResolveInfo,
+  ) => Promise<any> | any;
+}
+
+function resolveThunk<T>(thunk: Thunk<T>): T {
+  return thunk instanceof Function ? thunk() : thunk;
+}
+
+function defaultGetPayload<TSource>(obj: TSource) {
   return obj;
 }
 
-export function subscriptionWithClientId({
+export function subscriptionWithClientId<
+  TSource = any,
+  TContext = any,
+  TInput = { [inputName: string]: any }
+>({
   name,
-  description,
-  deprecationReason,
-  subscribe,
   inputFields,
   outputFields,
+  subscribe,
   getPayload = defaultGetPayload,
-}: SubscriptionConfig): GraphQLFieldConfig<any, any> {
+  ...config
+}: SubscriptionConfig<TSource, TContext, TInput>): GraphQLFieldConfig<
+  TSource,
+  TContext,
+  InputArgs<TInput>
+> {
   const inputType = new GraphQLInputObjectType({
     name: `${name}Input`,
     fields: () => ({
-      ...resolveMaybeThunk(inputFields),
+      ...resolveThunk(inputFields),
       clientSubscriptionId: { type: GraphQLString },
     }),
   });
@@ -61,27 +72,23 @@ export function subscriptionWithClientId({
   const outputType = new GraphQLObjectType({
     name: `${name}Payload`,
     fields: () => ({
-      ...resolveMaybeThunk(outputFields),
+      ...resolveThunk(outputFields),
       clientSubscriptionId: { type: GraphQLString },
     }),
   });
 
-  let wrappedSubscribe;
-  if (subscribe) {
-    wrappedSubscribe = (
-      obj: any,
-      { input }: any,
-      context: any,
-      info: GraphQLResolveInfo,
-    ) => subscribe(input, context, info);
-  } else {
-    wrappedSubscribe = undefined;
-  }
+  const wrappedSubscribe = subscribe
+    ? (
+        _obj: TSource,
+        { input }: InputArgs<TInput>,
+        context: TContext,
+        info: GraphQLResolveInfo,
+      ) => subscribe(input, context, info)
+    : undefined;
 
   return {
+    ...config,
     type: outputType,
-    description,
-    deprecationReason,
     args: {
       input: { type: new GraphQLNonNull(inputType) },
     },
