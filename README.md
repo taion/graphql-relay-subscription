@@ -23,9 +23,8 @@ const UpdateWidgetSubscription = subscriptionWithClientId({
   outputFields: {
     widget: Widget,
   },
-  subscribe: ({ widgetId }) => (
-    createSubscription(`widgets:${widgetId}:updated`)
-  ),
+  subscribe: ({ widgetId }) =>
+    createSubscription(`widgets:${widgetId}:updated`),
 });
 
 const subscription = await subscribe(
@@ -53,12 +52,9 @@ const subscription = await subscribe(
 
 [build-badge]: https://img.shields.io/travis/taion/graphql-relay-subscription/master.svg
 [build]: https://travis-ci.org/taion/graphql-relay-subscription
-
 [npm-badge]: https://img.shields.io/npm/v/graphql-relay-subscription.svg
 [npm]: https://www.npmjs.org/package/graphql-relay-subscription
-
 [codecov-badge]: https://img.shields.io/codecov/c/github/taion/graphql-relay-subscription/master.svg
 [codecov]: https://codecov.io/gh/taion/graphql-relay-subscription
-
 [discord-badge]: https://img.shields.io/badge/Discord-join%20chat%20%E2%86%92-738bd7.svg
 [discord]: https://discord.gg/0ZcbPKXt5bX40xsQ
