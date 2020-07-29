@@ -28,7 +28,7 @@
     "prepublish": "npm run build",
     "tdd": "jest --watch",
     "test": "npm run lint && npm run typecheck && npm run testonly -- --coverage",
-    "testonly": "jest",
+    "testonly": "jest --runInBand --verbose",
     "typecheck": "tsc --noEmit && tsc --noEmit -p test"
   },
   "husky": {
@@ -49,6 +49,7 @@
     "@4c/jest-preset": "^1.5.1",
     "@4c/prettier-config": "^1.1.0",
     "@4c/tsconfig": "^0.3.1",
+    "@babel/core": "^7.10.5",
     "@babel/preset-typescript": "^7.10.4",
     "@types/jest": "^26.0.7",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
