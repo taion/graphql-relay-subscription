@@ -77,22 +77,20 @@ export function subscriptionWithClientId<
     }),
   });
 
-  const wrappedSubscribe = subscribe
-    ? (
-        _obj: TSource,
-        { input }: InputArgs<TInput>,
-        context: TContext,
-        info: GraphQLResolveInfo,
-      ) => subscribe(input, context, info)
-    : undefined;
-
   return {
     ...config,
     type: outputType,
     args: {
-      input: { type: new GraphQLNonNull(inputType) },
+      input: { type: GraphQLNonNull(inputType) },
     },
-    subscribe: wrappedSubscribe,
+    subscribe:
+      subscribe &&
+      ((
+        _obj: TSource,
+        { input }: InputArgs<TInput>,
+        context: TContext,
+        info: GraphQLResolveInfo,
+      ) => subscribe(input, context, info)),
     resolve: (obj, { input }, context, info) =>
       Promise.resolve(getPayload(obj, input, context, info)).then(
         (payload) => ({
