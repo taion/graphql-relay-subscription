@@ -12,11 +12,11 @@ import type {
   Thunk,
 } from 'graphql';
 
-interface InputArgs<TInput> {
+export interface InputArgs<TInput> {
   input: TInput & { clientSubscriptionId?: string | null | undefined };
 }
 
-interface SubscriptionConfig<TSource, TContext, TInput>
+export interface SubscriptionConfig<TSource, TContext, TInput>
   extends Omit<
     GraphQLFieldConfig<TSource, TContext, InputArgs<TInput>>,
     'type' | 'args' | 'subscribe' | 'resolve'
