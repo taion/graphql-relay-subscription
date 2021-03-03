@@ -23,7 +23,7 @@ const UpdateWidgetSubscription = subscriptionWithClientId({
   outputFields: {
     widget: Widget,
   },
-  subscribe: ({ widgetId }) =>
+  subscribe: (source, { widgetId }) =>
     createSubscription(`widgets:${widgetId}:updated`),
 });
 
