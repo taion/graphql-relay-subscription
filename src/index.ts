@@ -25,6 +25,7 @@ export interface SubscriptionConfig<TSource, TContext, TInput>
   inputFields?: Thunk<GraphQLInputFieldConfigMap>;
   outputFields?: Thunk<GraphQLFieldConfigMap<TSource, TContext>>;
   subscribe?: (
+    obj: TSource,
     input: TInput,
     context: TContext,
     info: GraphQLResolveInfo,
@@ -86,11 +87,11 @@ export function subscriptionWithClientId<
     subscribe:
       subscribe &&
       ((
-        _obj: TSource,
+        source: TSource,
         { input }: InputArgs<TInput>,
         context: TContext,
         info: GraphQLResolveInfo,
-      ) => subscribe(input, context, info)),
+      ) => subscribe(source, input, context, info)),
     resolve: (obj, { input }, context, info) =>
       Promise.resolve(getPayload(obj, input, context, info)).then(
         (payload) => ({

@@ -138,7 +138,7 @@ describe('custom resolution', () => {
               value: { type: GraphQLString },
               arg: { type: GraphQLString },
             }),
-            async *subscribe({ arg }) {
+            async *subscribe(_, { arg }) {
               yield { value: `subscribed:${arg}` };
               yield { value: 'bar' };
             },
