@@ -3661,13 +3661,13 @@ eslint-config-4catalyzer-jest@^2.0.10:
   resolved "https://registry.yarnpkg.com/eslint-config-4catalyzer-jest/-/eslint-config-4catalyzer-jest-2.0.10.tgz#19a226c5c73b19a13397a74f5ee84dee59fcdfb2"
   integrity sha512-h0dBoyriwAx5XrOFHCUGvr7y6Aoxm+cPrPgg/gd/v9FrZS713dwxDublNkZOqM7v/jG4hNRaGU2jOquwrDep7Q==
 
-eslint-config-4catalyzer-typescript@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/eslint-config-4catalyzer-typescript/-/eslint-config-4catalyzer-typescript-2.0.4.tgz#407b58df26582fe34894287ebd76c8e51e5b48c0"
-  integrity sha512-hHlDDvRuYcRqFh3z1D5qlcr4e4WGFNHI0DpErOHCyZxvw06BFy/y+ZRd2BYLLjmGZqMLx/ro3fTkjUyTmUuXQQ==
+eslint-config-4catalyzer-typescript@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-4catalyzer-typescript/-/eslint-config-4catalyzer-typescript-3.1.0.tgz#709e8ca9fdf8b4bbfd406320b90ba0aa0bfd027d"
+  integrity sha512-gOu09Uth+qHseu1Mylwol0z6WnlWI1TaPUSpPsQsCLr6XbS+SgBMw6sfvctRilmh9BveuFy9Dlqn3tHyPZFDyg==
   dependencies:
     babel-eslint "^10.0.3"
-    eslint-import-resolver-typescript "^2.2.1"
+    eslint-import-resolver-typescript "^2.4.0"
 
 eslint-config-4catalyzer@^1.1.5:
   version "1.1.5"
@@ -3701,10 +3701,10 @@ eslint-import-resolver-node@^0.3.4:
     debug "^2.6.9"
     resolve "^1.13.1"
 
-eslint-import-resolver-typescript@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-import-resolver-typescript/-/eslint-import-resolver-typescript-2.2.1.tgz#4b9bdfb51af7e14947ebc40ffdd6c32d5924b905"
-  integrity sha512-wxlVdwuWY6R5+CoesIy6n8EZX4k9lEeZGWTVBoX9g//8Xma8JMtL/p3AGnG43rRyXmIrX+/0IN8lpOPzrw1fSw==
+eslint-import-resolver-typescript@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-import-resolver-typescript/-/eslint-import-resolver-typescript-2.4.0.tgz#ec1e7063ebe807f0362a7320543aaed6fe1100e1"
+  integrity sha512-useJKURidCcldRLCNKWemr1fFQL1SzB3G4a0li6lFGvlc5xGe1hY343bvG07cbpCzPuM/lK19FIJB3XGFSkplA==
   dependencies:
     debug "^4.1.1"
     glob "^7.1.6"
