@@ -1,15 +1,15 @@
 import {
+  GraphQLInputFieldConfig,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
+  resolveObjMapThunk,
 } from 'graphql';
 import type {
   GraphQLFieldConfig,
-  GraphQLFieldConfigMap,
-  GraphQLInputFieldConfigMap,
   GraphQLResolveInfo,
-  Thunk,
+  ThunkObjMap,
 } from 'graphql';
 
 export interface InputArgs<TInput> {
@@ -22,8 +22,8 @@ export interface SubscriptionConfig<TSource, TContext, TInput>
     'type' | 'args' | 'subscribe' | 'resolve'
   > {
   name: string;
-  inputFields?: Thunk<GraphQLInputFieldConfigMap>;
-  outputFields?: Thunk<GraphQLFieldConfigMap<TSource, TContext>>;
+  inputFields?: ThunkObjMap<GraphQLInputFieldConfig>;
+  outputFields?: ThunkObjMap<GraphQLFieldConfig<TSource, TContext>>;
   subscribe?: (
     input: TInput,
     context: TContext,
@@ -35,10 +35,6 @@ export interface SubscriptionConfig<TSource, TContext, TInput>
     context: TContext,
     info: GraphQLResolveInfo,
   ) => Promise<any> | any;
-}
-
-function resolveThunk<T>(thunk: Thunk<T>): T {
-  return thunk instanceof Function ? thunk() : thunk;
 }
 
 function defaultGetPayload<TSource>(obj: TSource) {
@@ -64,7 +60,7 @@ export function subscriptionWithClientId<
   const inputType = new GraphQLInputObjectType({
     name: `${name}Input`,
     fields: () => ({
-      ...resolveThunk(inputFields),
+      ...resolveObjMapThunk(inputFields || {}),
       clientSubscriptionId: { type: GraphQLString },
     }),
   });
@@ -72,7 +68,7 @@ export function subscriptionWithClientId<
   const outputType = new GraphQLObjectType({
     name: `${name}Payload`,
     fields: () => ({
-      ...resolveThunk(outputFields),
+      ...resolveObjMapThunk(outputFields || {}),
       clientSubscriptionId: { type: GraphQLString },
     }),
   });
@@ -81,7 +77,7 @@ export function subscriptionWithClientId<
     ...config,
     type: outputType,
     args: {
-      input: { type: GraphQLNonNull(inputType) },
+      input: { type: new GraphQLNonNull(inputType) },
     },
     subscribe:
       subscribe &&
